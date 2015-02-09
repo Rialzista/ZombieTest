@@ -12,6 +12,7 @@ public class GameScreen implements Screen {
 
     private GameWorld mWorld;
     private GameRenderer mRenderer;
+    private float mRunTime = 0;
 
     public GameScreen() {
 
@@ -23,7 +24,7 @@ public class GameScreen implements Screen {
         int midPointY = (int) (gameHeight / 2);
 
         this.mWorld = new GameWorld(midPointY);       // initialize world
-        this.mRenderer = new GameRenderer(this.mWorld); // initialize renderer
+        this.mRenderer = new GameRenderer(this.mWorld, (int) gameHeight, midPointY); // initialize renderer
 
         Gdx.input.setInputProcessor(new InputHandler(this.mWorld.getBird()));
     }
@@ -35,8 +36,10 @@ public class GameScreen implements Screen {
 
     @Override
     public void render(float delta) {
+
+        this.mRunTime += delta;
         this.mWorld.update(delta);
-        this.mRenderer.render();
+        this.mRenderer.render(this.mRunTime);
     }
 
     @Override
