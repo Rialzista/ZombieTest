@@ -1,6 +1,7 @@
 package com.rialzista.zombiebird;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.graphics.Color;
 import com.badlogic.gdx.graphics.GL20;
 import com.badlogic.gdx.graphics.OrthographicCamera;
 import com.badlogic.gdx.graphics.g2d.Animation;
@@ -8,6 +9,9 @@ import com.badlogic.gdx.graphics.g2d.SpriteBatch;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.glutils.ShapeRenderer;
 import com.rialzista.gameobjects.Bird;
+import com.rialzista.gameobjects.Grass;
+import com.rialzista.gameobjects.Pipe;
+import com.rialzista.gameobjects.ScrollHandler;
 import com.rialzista.zbhelpers.AssetLoader;
 
 /**
@@ -17,6 +21,9 @@ public class GameRenderer {
 
     // Game Objects
     private Bird bird;
+    private ScrollHandler scroller;
+    private Grass frontGrass, backGrass;
+    private Pipe pipe1, pipe2, pipe3;
 
     // Game Assets
     private TextureRegion bg, grass;
@@ -81,8 +88,17 @@ public class GameRenderer {
         this.mBatcher.disableBlending();
         this.mBatcher.draw(bg, 0, mMidPointY + 23, 136, 43);
 
+        // Draw Grass
+        drawGrass();
+
+        // Draw Pipes
+        drawPipes();
+
         // Bird is need opacity turn on there
         this.mBatcher.enableBlending();
+
+        // Draw skulls (need opacity)
+        drawSkulls();
 
         if (bird.shouldntFlap()) {
             this.mBatcher.draw(birdMid, bird.getX(), bird.getY(),
@@ -97,10 +113,71 @@ public class GameRenderer {
 
         // Ending SpriteBatch
         this.mBatcher.end();
+/*
+        this.mShapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
+        this.mShapeRenderer.setColor(Color.RED);
+        this.mShapeRenderer.circle(bird.getBoundingCircle().x, bird.getBoundingCircle().y,
+                bird.getBoundingCircle().radius);
+        this.mShapeRenderer.end();*/
      }
+
+    private void drawGrass() {
+        // Draw grass
+        this.mBatcher.draw(grass, frontGrass.getX(), frontGrass.getY(),
+                frontGrass.getWidth(), frontGrass.getHeight());
+
+        this.mBatcher.draw(grass, backGrass.getX(), backGrass.getY(),
+                backGrass.getWidth(), backGrass.getHeight());
+    }
+
+    private void drawSkulls() {
+        // temp code
+        this.mBatcher.draw(skullUp, pipe1.getX() - 1,
+                pipe1.getY() + pipe1.getHeight() - 14, 24, 14);
+
+        this.mBatcher.draw(skullDown, pipe1.getX() - 1,
+                pipe1.getY() + pipe1.getHeight() + 45, 24, 14);
+
+        this.mBatcher.draw(skullUp, pipe2.getX() - 1,
+                pipe2.getY() + pipe2.getHeight() - 14, 24, 14);
+
+        this.mBatcher.draw(skullDown, pipe2.getX() - 1,
+                pipe2.getY() + pipe2.getHeight() + 45, 24, 14);
+
+        this.mBatcher.draw(skullUp, pipe3.getX() - 1,
+                pipe3.getY() + pipe3.getHeight() - 14, 24, 14);
+
+        this.mBatcher.draw(skullDown, pipe3.getX() - 1,
+                pipe3.getY() + pipe3.getHeight() + 45, 24, 14);
+
+    }
+
+    private void drawPipes() {
+        // temp code
+        this.mBatcher.draw(bar, pipe1.getX(), pipe1.getY(), pipe1.getWidth(),
+                pipe1.getHeight());
+        this.mBatcher.draw(bar, pipe1.getX(), pipe1.getY() + pipe1.getHeight() + 45,
+                pipe1.getWidth(), mMidPointY + 66 - (pipe1.getHeight() + 45));
+
+        this.mBatcher.draw(bar, pipe2.getX(), pipe2.getY(), pipe2.getWidth(),
+                pipe2.getHeight());
+        this.mBatcher.draw(bar, pipe2.getX(), pipe2.getY() + pipe2.getHeight() + 45,
+                pipe2.getWidth(), mMidPointY + 66 - (pipe2.getHeight() + 45));
+
+        this.mBatcher.draw(bar, pipe3.getX(), pipe3.getY(), pipe3.getWidth(),
+                pipe3.getHeight());
+        this.mBatcher.draw(bar, pipe3.getX(), pipe3.getY() + pipe3.getHeight() + 45,
+                pipe3.getWidth(), mMidPointY + 66 - (pipe3.getHeight() + 45));
+    }
 
     private void initGameObjects() {
         bird = this.mWorld.getBird();
+        scroller = this.mWorld.getScroller();
+        frontGrass = scroller.getFrontGrass();
+        backGrass = scroller.getBackGrass();
+        pipe1 = scroller.getPipe1();
+        pipe2 = scroller.getPipe2();
+        pipe3 = scroller.getPipe3();
     }
 
     private void initAssets() {
@@ -113,6 +190,8 @@ public class GameRenderer {
         skullUp = AssetLoader.skullUp;
         skullDown = AssetLoader.skullDown;
         bar = AssetLoader.bar;
+
+
     }
 
 }
