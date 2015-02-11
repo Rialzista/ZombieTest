@@ -66,6 +66,8 @@ public class GameRenderer {
 
         this.mShapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
 
+
+
         // Paint bg color
         this.mShapeRenderer.setColor(55 / 255.0f, 80 / 255.0f, 100 / 255.0f, 1);
         this.mShapeRenderer.rect(0, 0, 136, mMidPointY + 66);
@@ -83,6 +85,7 @@ public class GameRenderer {
 
         // Start SpriteBatch
         this.mBatcher.begin();
+
         // Disable opacity
         // This action is better to performance
         this.mBatcher.disableBlending();
@@ -111,14 +114,111 @@ public class GameRenderer {
                     1, 1, bird.getRotation());
         }
 
-        // Ending SpriteBatch
+        if (mWorld.isReady()) {
+            // Отрисуем сначала тень
+            AssetLoader.shadow.draw(this.mBatcher, "Touch me", (136 / 2)
+                    - (42), 76);
+            // Отрисуем сам текст
+            AssetLoader.font.draw(this.mBatcher, "Touch me", (136 / 2)
+                    - (42 - 1), 75);
+        } else {
+
+            if (mWorld.isGameOver()) {
+                AssetLoader.shadow.draw(this.mBatcher, "Game Over", 25, 56);
+                AssetLoader.font.draw(this.mBatcher, "Game Over", 24, 55);
+
+                AssetLoader.shadow.draw(this.mBatcher, "Try again?", 23, 76);
+                AssetLoader.font.draw(this.mBatcher, "Try again?", 24, 75);
+
+
+
+            }
+
+            String score = mWorld.getScore() + "";
+
+            AssetLoader.shadow.draw(this.mBatcher, "" + mWorld.getScore(), (136 / 2)
+                    - (3 * score.length()), 12);
+            AssetLoader.font.draw(this.mBatcher, "" + mWorld.getScore(), (136 / 2)
+                    - (3 * score.length() - 1), 11);
+        }
+
         this.mBatcher.end();
-/*
-        this.mShapeRenderer.begin(ShapeRenderer.ShapeType.Filled);
-        this.mShapeRenderer.setColor(Color.RED);
-        this.mShapeRenderer.circle(bird.getBoundingCircle().x, bird.getBoundingCircle().y,
-                bird.getBoundingCircle().radius);
-        this.mShapeRenderer.end();*/
+
+        /*
+        *
+        * Gdx.gl.glClearColor(0, 0, 0, 1);
+        Gdx.gl.glClear(GL20.GL_COLOR_BUFFER_BIT);
+
+        shapeRenderer.begin(ShapeType.Filled);
+
+        shapeRenderer.setColor(55 / 255.0f, 80 / 255.0f, 100 / 255.0f, 1);
+        shapeRenderer.rect(0, 0, 136, midPointY + 66);
+
+        shapeRenderer.setColor(111 / 255.0f, 186 / 255.0f, 45 / 255.0f, 1);
+        shapeRenderer.rect(0, midPointY + 66, 136, 11);
+
+        shapeRenderer.setColor(147 / 255.0f, 80 / 255.0f, 27 / 255.0f, 1);
+        shapeRenderer.rect(0, midPointY + 77, 136, 52);
+
+        shapeRenderer.end();
+
+        batcher.begin();
+        batcher.disableBlending();
+        batcher.draw(bg, 0, midPointY + 23, 136, 43);
+
+        drawGrass();
+
+        drawPipes();
+        batcher.enableBlending();
+
+        drawSkulls();
+
+        if (bird.shouldntFlap()) {
+            batcher.draw(birdMid, bird.getX(), bird.getY(),
+                    bird.getWidth() / 2.0f, bird.getHeight() / 2.0f,
+                    bird.getWidth(), bird.getHeight(), 1, 1, bird.getRotation());
+
+        } else {
+            batcher.draw(birdAnimation.getKeyFrame(runTime), bird.getX(),
+                    bird.getY(), bird.getWidth() / 2.0f,
+                    bird.getHeight() / 2.0f, bird.getWidth(), bird.getHeight(),
+                    1, 1, bird.getRotation());
+        }
+
+
+        // ВРЕМЕННЫЙ КОД! Изменим позже:
+
+        if (myWorld.isReady()) {
+            // Отрисуем сначала тень
+            AssetLoader.shadow.draw(batcher, "Touch me", (136 / 2)
+                    - (42), 76);
+            // Отрисуем сам текст
+            AssetLoader.font.draw(batcher, "Touch me", (136 / 2)
+                    - (42 - 1), 75);
+        } else {
+
+            if (myWorld.isGameOver()) {
+                AssetLoader.shadow.draw(batcher, "Game Over", 25, 56);
+                AssetLoader.font.draw(batcher, "Game Over", 24, 55);
+
+                AssetLoader.shadow.draw(batcher, "Try again?", 23, 76);
+                AssetLoader.font.draw(batcher, "Try again?", 24, 75);
+
+
+
+            }
+
+            String score = myWorld.getScore() + "";
+
+            AssetLoader.shadow.draw(batcher, "" + myWorld.getScore(), (136 / 2)
+                    - (3 * score.length()), 12);
+            AssetLoader.font.draw(batcher, "" + myWorld.getScore(), (136 / 2)
+                    - (3 * score.length() - 1), 11);
+        }
+
+        batcher.end();
+        *
+        * */
      }
 
     private void drawGrass() {

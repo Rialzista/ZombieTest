@@ -2,6 +2,7 @@ package com.rialzista.gameobjects;
 
 import com.badlogic.gdx.math.Circle;
 import com.badlogic.gdx.math.Vector2;
+import com.rialzista.zbhelpers.AssetLoader;
 
 /**
  * Created by Rialzista on 09.02.2015.
@@ -17,6 +18,7 @@ public class Bird {
     private int height;
 
     private Circle boundingCircle;
+    private boolean isAlive;
 
     public Bird(float x, float y, int width, int height) {
         this.width = width;
@@ -24,6 +26,7 @@ public class Bird {
         this.position = new Vector2(x, y);
         this.velocity = new Vector2(0, 0);
         this.acceleration = new Vector2(0, 460);
+        isAlive = true;
 
         this.boundingCircle = new Circle();
     }
@@ -33,6 +36,11 @@ public class Bird {
 
         if (velocity.y > 200) {
             velocity.y = 200;
+        }
+
+        if (position.y < -13) {
+            position.y = -13;
+            velocity.y = 0;
         }
 
         position.add(velocity.cpy().scl(delta));
@@ -46,15 +54,28 @@ public class Bird {
                 rotation = -20;
         }
 
-        if (isFalling()) {
+        if (isFalling() || !isAlive) {
             rotation += 480 * delta;
             if (rotation > 90)
                 rotation = 90;
         }
     }
 
+    public void die() {
+        isAlive = false;
+        velocity.y = 0;
+    }
+
+    public void decelerate() {
+        // We need to bird stop fly after die
+        acceleration.y = 0;
+    }
+
     public void onClick() {
-        velocity.y = -140;
+        if (isAlive) {
+            AssetLoader.flap.play();
+            velocity.y = -140;
+        }
     }
 
     public float getX() {
@@ -80,11 +101,24 @@ public class Bird {
     }
 
     public boolean shouldntFlap() {
-        return velocity.y > 70;
+        return velocity.y > 70 || !isAlive;
     }
 
     public Circle getBoundingCircle() {
         return boundingCircle;
     }
 
+    public boolean isAlive() {
+        return isAlive;
+    }
+
+    public void onRestart(int y) {
+        rotation = 0;
+        position.y = y;
+        position.x = 0;
+        velocity.y = 0;
+        acceleration.x = 0;
+        acceleration.y = 460;
+        isAlive = true;
+    }
 }

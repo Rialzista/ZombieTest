@@ -2,16 +2,19 @@ package com.rialzista.zbhelpers;
 
 import com.badlogic.gdx.InputProcessor;
 import com.rialzista.gameobjects.Bird;
+import com.rialzista.zombiebird.GameWorld;
 
 /**
  * Created by Rialzista on 09.02.2015.
  */
 public class InputHandler implements InputProcessor {
 
+    private final GameWorld myWorld;
     private Bird myBird;
 
-    public InputHandler(Bird bird) {
-        this.myBird = bird;
+    public InputHandler(GameWorld myWorld) {
+        this.myWorld = myWorld;
+        this.myBird = myWorld.getBird();
     }
 
     @Override
@@ -31,7 +34,17 @@ public class InputHandler implements InputProcessor {
 
     @Override
     public boolean touchDown(int screenX, int screenY, int pointer, int button) {
+
+        if (myWorld.isReady()) {
+            myWorld.start();
+        }
+
         myBird.onClick();
+
+        if (myWorld.isGameOver()) {
+            myWorld.restart();
+        }
+
         return true;
     }
 

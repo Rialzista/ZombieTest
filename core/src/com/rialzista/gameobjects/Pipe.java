@@ -1,5 +1,8 @@
 package com.rialzista.gameobjects;
 
+import com.badlogic.gdx.math.Intersector;
+import com.badlogic.gdx.math.Rectangle;
+
 import java.util.Random;
 
 /**
@@ -7,11 +10,26 @@ import java.util.Random;
  */
 public class Pipe extends Scrollable {
 
-    private Random r;
+    public static final int VERTICAL_GAP = 45;
+    public static final int SKULL_WIDTH = 24;
+    public static final int SKULL_HEIGHT = 11;
 
-    public Pipe(float x, float y, int width, int height, float scrollSpeed) {
+    private float groundY;
+
+    private Random r;
+    private Rectangle skullUp, skullDown, barUp, barDown;
+    private boolean isScored = false;
+
+    public Pipe(float x, float y, int width, int height, float scrollSpeed, float groundY) {
         super(x, y, width, height, scrollSpeed);
+
         r = new Random();
+        skullUp = new Rectangle();
+        skullDown = new Rectangle();
+        barUp = new Rectangle();
+        barDown = new Rectangle();
+
+        this.groundY = groundY;
     }
 
     @Override
@@ -19,5 +37,63 @@ public class Pipe extends Scrollable {
         super.reset(newX);
         // Change height to random value
         height = r.nextInt(90) + 15;
+        isScored = false;
+    }
+
+    @Override
+    public void update(float delta) {
+        super.update(delta);
+
+        // Method set change coordinates top left angle
+
+        barUp.set(position.x, position.y, width, height);
+        barDown.set(position.x, position.y + height + VERTICAL_GAP, width,
+                groundY - (position.y + height + VERTICAL_GAP));
+
+        // Width skull 24 px, Width pipe - 22px. skull need to move 1px to left side (on pipe)
+        skullUp.set(position.x - (SKULL_WIDTH - width) / 2,
+                position.y + height - SKULL_HEIGHT, SKULL_WIDTH, SKULL_HEIGHT);
+
+        skullDown.set(position.x - (SKULL_WIDTH - width) / 2, barDown.y,
+                SKULL_WIDTH, SKULL_HEIGHT);
+    }
+
+    public boolean collides(Bird bird) {
+        if (position.x < bird.getX() + bird.getWidth()) {
+            return (Intersector.overlaps(bird.getBoundingCircle(), barUp)
+            || Intersector.overlaps(bird.getBoundingCircle(), barDown)
+            || Intersector.overlaps(bird.getBoundingCircle(), skullUp)
+            || Intersector.overlaps(bird.getBoundingCircle(), skullDown));
+        }
+        return false;
+    }
+
+    public Rectangle getSkullUp() {
+        return skullUp;
+    }
+
+    public Rectangle getSkullDown() {
+        return skullDown;
+    }
+
+    public Rectangle getBarUp() {
+        return barUp;
+    }
+
+    public Rectangle getBarDown() {
+        return barDown;
+    }
+
+    public boolean isScored() {
+        return isScored;
+    }
+
+    public void setScored(boolean b) {
+        isScored = b;
+    }
+
+    public void onRestart(float x, float scrollSpeed) {
+        velocity.x = scrollSpeed;
+        reset(x);
     }
 }

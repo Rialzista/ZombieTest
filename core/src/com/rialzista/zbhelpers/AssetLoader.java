@@ -1,7 +1,9 @@
 package com.rialzista.zbhelpers;
 
 import com.badlogic.gdx.Gdx;
+import com.badlogic.gdx.audio.Sound;
 import com.badlogic.gdx.graphics.Texture;
+import com.badlogic.gdx.graphics.g2d.BitmapFont;
 import com.badlogic.gdx.graphics.g2d.TextureRegion;
 import com.badlogic.gdx.graphics.g2d.Animation;
 /**
@@ -17,7 +19,20 @@ public class AssetLoader {
 
     public static TextureRegion skullUp, skullDown, bar;
 
+    public static Sound dead, flap, coin;
+    public static BitmapFont font, shadow;
+
     public static void load() {
+
+        font = new BitmapFont(Gdx.files.internal("text.fnt"));
+        font.setScale(.25f, -.25f);
+        shadow = new BitmapFont(Gdx.files.internal("shadow.fnt"));
+        shadow.setScale(.25f, -.25f);
+
+
+        dead = Gdx.audio.newSound(Gdx.files.internal("dead.wav"));
+        flap = Gdx.audio.newSound(Gdx.files.internal("flap.wav"));
+        coin = Gdx.audio.newSound(Gdx.files.internal("coin.wav"));
 
         texture = new Texture(Gdx.files.internal("texture.png"));
         texture.setFilter(Texture.TextureFilter.Nearest, Texture.TextureFilter.Nearest);
@@ -54,6 +69,11 @@ public class AssetLoader {
     public static void dispose() {
         // Dispose textures after ending usage objects
         texture.dispose();
+        dead.dispose();
+        flap.dispose();
+        coin.dispose();
+        font.dispose();
+        shadow.dispose();
     }
 
 }
